@@ -1,0 +1,23 @@
+# RepScan 依赖清单
+# pip install -r requirements.txt
+
+# === 核心 API 服务 ===
+fastapi>=0.109.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# === HTTP 请求 ===
+httpx>=0.25.0
+
+# === 文件上传 ===
+python-multipart>=0.0.6
+
+# === HTML 解析 ===
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# === (可选) 浏览器爬虫 ===
+# playwright>=1.40.0
+
+# === 开发与测试 ===
+# pytest>=7.4.0
