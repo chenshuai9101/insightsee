@@ -51,3 +51,44 @@ python3 api_server.py
 ## License
 
 MIT
+
+## Usage Examples
+
+### CLI
+
+```bash
+# Analyze a single feedback
+python3 engine/analyzers/analyzer.py --text "物流太慢了，等了5天还没到"
+
+# Batch analysis
+echo "价格贵了 / 客服态度差 / 包装碎了" | python3 engine/analyzers/analyzer.py --batch
+```
+
+### Python
+
+```python
+from engine.analyzers.analyzer import InsightEngine
+
+engine = InsightEngine()
+result = engine.analyze(["手机卡顿严重，经常自动重启"])
+# result → [{ industry, sentiment, dimensions, tags, summary }]
+```
+
+### API Server
+
+```bash
+python3 api_server.py
+# → http://localhost:9090
+
+curl -X POST http://localhost:9090/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"texts":["屏幕摔碎换屏要多少钱"]}'
+```
+
+### With InsightLens MCP
+
+```bash
+openclaw mcp set insightlens
+# Then in any OpenClaw agent: "search_web and analyze_with_insightsee"
+```
+
