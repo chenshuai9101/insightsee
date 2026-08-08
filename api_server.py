@@ -1,5 +1,5 @@
 """
-RepScan API Server — FastAPI 后端服务
+InsightSee API Server — FastAPI 后端服务
 
 核心哲学：
   每一次反馈，都是一次未被满足的期待。
@@ -9,7 +9,7 @@ RepScan API Server — FastAPI 后端服务
   POST /api/search       🔍 搜索公开内容 → 分析洞察
   POST /api/analyze-file 📄 上传文件 → 分析洞察
   
-旧端点（保留兼容）：
+  旧端点（保留兼容）：
   POST /api/analyze  — 文本分析
   GET  /api/tasks    — 演示数据
 """
@@ -46,14 +46,15 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
-logger = logging.getLogger("repscan.api")
+logger = logging.getLogger("insightsee.api")
 
-app = FastAPI(title="RepScan API", version="0.3.0")
+app = FastAPI(title="InsightSee API", version="0.4.0")
 
+_cors_origins = os.getenv("INSIGHTSEE_CORS_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=[o.strip() for o in _cors_origins if o.strip()],
+    allow_credentials=_cors_origins != ["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -186,8 +187,13 @@ async def analyze_file(file: UploadFile = File(...)):
     if not file:
         raise HTTPException(status_code=400, detail="No file provided")
 
-    content = await file.read()
     filename = file.filename or "unknown.txt"
+    content = b""
+    max_bytes = int(os.getenv("INSIGHTSEE_MAX_UPLOAD_MB", "20")) * 1024 * 1024
+    while chunk := await file.read(1024 * 1024):
+        content += chunk
+        if len(content) > max_bytes:
+            raise HTTPException(status_code=413, detail="文件过大，超过上传限制")
     texts = _parse_file(content, filename)
 
     items = [RawItem(content=t, platform=f"文件:{filename}") for t in texts]

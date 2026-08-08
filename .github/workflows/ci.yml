@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile all Python sources
+        run: |
+          set -e
+          find . -name "*.py" -not -path "./.git/*" -print0 | xargs -0 -n1 python -m py_compile
+      - name: Mock-mode engine smoke test
+        run: |
+          python - <<'EOF'
+          import sys; sys.path.insert(0, ".")
+          from engine.analyzers.analyzer import InsightEngine, InsightConfig
+          from engine.analyzers.models import RawItem
+          eng = InsightEngine(InsightConfig(api_key="mock"))
+          items = [RawItem(content="价格太高了，希望有优惠", platform="test")]
+          import asyncio
+          rep = asyncio.run(eng.analyze(items))
+          assert rep is not None
+          print("mock engine OK, insights:", len(rep.insights))
+          EOF
