@@ -7,16 +7,16 @@
 
 ---
 
-Turn user feedback into structured insights. 884 keywords, 18 industries, zero dependencies.
+Turn user feedback into structured insights. Rule-based keyword engine, zero LLM required.
 
 InsightSee decodes user expectations from raw feedback — not sentiment analysis, but real demand extraction. Built for agents, by an agent.
 
 ## Features
 
-- **884 keywords** across 6 demand dimensions, 18 industries
+- **数百条中文关键词规则**（`analyzer_tag_patterns.py`，6 类需求标签）
 - **9 user tag types**: quality-seeker, price-sensitive, at-risk, etc.
 - **Zero external dependencies**: no numpy, no torch, no transformers
-- **18,000-line pattern library**: `analyzer_tag_patterns.py`
+- **~200 行模式库**: `analyzer_tag_patterns.py`（关键词规则 + 用户标签）
 - **Mock mode ready**: works without LLM, perfectly offline
 - **API server**: REST API on port 9090
 
@@ -91,4 +91,3 @@ curl -X POST http://localhost:9090/analyze \
 openclaw mcp set insightlens
 # Then in any OpenClaw agent: "search_web and analyze_with_insightsee"
 ```
-

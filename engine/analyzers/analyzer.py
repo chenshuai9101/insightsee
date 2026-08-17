@@ -90,7 +90,6 @@ class InsightEngine:
             )
 
         # 对每条反馈逐条处理
-        # 对每条反馈逐条处理
         tagged_items = []  # (insight_label, user_tag, content)
         all_tags = []
         pattern_hits = {p["label"]: [] for p in TAG_PATTERNS}

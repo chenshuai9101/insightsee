@@ -311,7 +311,7 @@ async def analyze_texts(req: InsightRequest):
 def health():
     return {
         "status": "ok",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "engine": "llm" if os.environ.get("REPSCAN_LLM_API_KEY") else "mock",
         "search_engine": "duckduckgo" if search_engine else None,
         "timestamp": datetime.now().isoformat(),
